@@ -1,13 +1,6 @@
 export function weatherQuery(location) {
   return `query {
     getCityByName(name: "${location}") {
-      id
-      name
-      country
-      coord {
-        lon
-        lat
-      }
       weather {
         summary {
           title
@@ -29,7 +22,6 @@ export function weatherQuery(location) {
           visibility
           humidity
         }
-        timestamp
       }
     }
   }`;

@@ -1,24 +1,24 @@
 import { useEffect } from "react";
 
-function success(pos) {
-  const crd = pos.coords;
+export default function DetectLocation(props) {
+  function success(pos) {
+    const crd = pos.coords;
 
-  fetch(
-    `https://nominatim.openstreetmap.org/reverse?format=json&lat=${crd.latitude}&lon=${crd.longitude}`
-  )
-    .then((response) => {
-      return response.json();
-    })
-    .then((response) => {
-      console.log(response.address.city);
-    });
-}
+    fetch(
+      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${crd.latitude}&lon=${crd.longitude}`
+    )
+      .then((response) => {
+        return response.json();
+      })
+      .then((response) => {
+        props.stateChanger(response.address.city);
+      });
+  }
 
-function errors(err) {
-  console.warn(`ERROR(${err.code}): ${err.message}`);
-}
+  function errors(err) {
+    console.warn(`ERROR(${err.code}): ${err.message}`);
+  }
 
-export default function DetectLocation() {
   useEffect(() => {
     const options = {
       enableHighAccuracy: true,
