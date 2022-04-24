@@ -5,6 +5,7 @@ const initialState = {
   summary: { title: "", description: "", icon: "" },
   temperature: { actual: "", feelsLike: "", min: "", max: "" },
   wind: { speed: "", deg: "" },
+  timestamp: "",
 };
 
 function rootReducer(state = initialState, action) {
@@ -35,6 +36,7 @@ function rootReducer(state = initialState, action) {
         speed: action.payload.wind.speed,
         deg: action.payload.wind.deg,
       },
+      timestamp: action.payload.timestamp,
     };
   }
   return state;

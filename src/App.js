@@ -7,6 +7,7 @@ import store from "./store";
 
 function App() {
   const [city, setCity] = useState("");
+  const [temp, setTemp] = useState(false);
 
   const makeFetchCall = () => {
     fetch("http://localhost:4000/", {
@@ -22,6 +23,7 @@ function App() {
         return response.json();
       })
       .then((response) => {
+        console.log(response.data);
         store.dispatch(updateInfo(response.data.getCityByName.weather));
       });
   };
@@ -31,6 +33,18 @@ function App() {
       makeFetchCall();
     }
   }, [city]);
+
+  // store.subscribe(() => {
+  //   setTemp(!temp);
+  // });
+
+  useEffect(() => {
+    const unsubscribe = store.subscribe(() => {
+      console.log("subscribe triggered");
+      setTemp(!temp);
+    });
+    return unsubscribe;
+  });
 
   return (
     <div className="App">
@@ -54,6 +68,8 @@ function App() {
       <div>Wind</div>
       <div>Deg: {store.getState().wind.deg}</div>
       <div>Speed: {store.getState().wind.speed}</div>
+
+      <div>timestamp: {store.getState().timestamp}</div>
 
       <button
         onClick={() => {

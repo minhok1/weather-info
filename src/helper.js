@@ -22,6 +22,7 @@ export function weatherQuery(location) {
           visibility
           humidity
         }
+        timestamp
       }
     }
   }`;
