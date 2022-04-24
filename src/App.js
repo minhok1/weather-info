@@ -12,7 +12,7 @@ function App() {
   const weatherData = useSelector((state) => state);
 
   const makeFetchCall = useCallback(() => {
-    fetch("https://graphql-weather-api.herokuapp.com/", {
+    fetch("https://localhost:4000/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
