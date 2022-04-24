@@ -1,4 +1,6 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+
 import { updateInfo } from "./actions";
 import "./App.css";
 import DetectLocation from "./DetectLocation";
@@ -7,10 +9,10 @@ import store from "./store";
 
 function App() {
   const [city, setCity] = useState("");
-  const [temp, setTemp] = useState("");
+  const weatherData = useSelector((state) => state);
 
-  const makeFetchCall = () => {
-    fetch("http://localhost:4000/", {
+  const makeFetchCall = useCallback(() => {
+    fetch("https://graphql-weather-api.herokuapp.com/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -23,47 +25,47 @@ function App() {
         return response.json();
       })
       .then((response) => {
-        console.log(response.data);
         store.dispatch(updateInfo(response.data.getCityByName.weather));
       });
-  };
+  }, [city]);
 
   useEffect(() => {
     if (city) {
       makeFetchCall();
     }
-  }, [city]);
-
-  store.subscribe(() => {
-    setTemp(store.getState());
-  });
+  }, [city, makeFetchCall]);
 
   return (
     <div className="App">
       <DetectLocation state={city} stateChanger={setCity} />
-      <div>Clouds</div>
-      <div>All: {store.getState().clouds.all}</div>
-      <div>Humidity: {store.getState().clouds.humidity}</div>
-      <div>Visibility: {store.getState().clouds.visibility}</div>
 
-      <div>Summary</div>
-      <div>Description: {store.getState().summary.description}</div>
-      <div>Icon: {store.getState().summary.icon}</div>
-      <div>Title: {store.getState().summary.title}</div>
+      <div>Weather for: {city}</div>
 
-      <div>Temperature</div>
-      <div>Actual: {store.getState().temperature.actual}</div>
-      <div>Feels like: {store.getState().temperature.feelslike}</div>
-      <div>Max: {store.getState().temperature.max}</div>
-      <div>Min: {store.getState().temperature.min}</div>
-
-      <div>Wind</div>
-      <div>Deg: {store.getState().wind.deg}</div>
-      <div>Speed: {store.getState().wind.speed}</div>
-
-      <div>timestamp: {store.getState().timestamp}</div>
+      {Object.keys(weatherData).map((key, i) => {
+        if (key === "timestamp") {
+          return (
+            <div className="timestamp" key={i}>
+              {key}-{weatherData[key]}
+            </div>
+          );
+        } else {
+          return (
+            <div key={i}>
+              <div className="category">{key}</div>
+              {Object.keys(weatherData[key]).map((subkey, j) => {
+                return (
+                  <div className="entry" key={j}>
+                    {subkey}-{weatherData[key][subkey]}
+                  </div>
+                );
+              })}
+            </div>
+          );
+        }
+      })}
 
       <button
+        className="refresh-button"
         onClick={() => {
           makeFetchCall();
         }}

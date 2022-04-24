@@ -1,19 +1,22 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 
 export default function DetectLocation(props) {
-  function success(pos) {
-    const crd = pos.coords;
+  const success = useCallback(
+    (pos) => {
+      const crd = pos.coords;
 
-    fetch(
-      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${crd.latitude}&lon=${crd.longitude}`
-    )
-      .then((response) => {
-        return response.json();
-      })
-      .then((response) => {
-        props.stateChanger(response.address.city);
-      });
-  }
+      fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${crd.latitude}&lon=${crd.longitude}`
+      )
+        .then((response) => {
+          return response.json();
+        })
+        .then((response) => {
+          props.stateChanger(response.address.city);
+        });
+    },
+    [props]
+  );
 
   function errors(err) {
     console.warn(`ERROR(${err.code}): ${err.message}`);
@@ -32,7 +35,7 @@ export default function DetectLocation(props) {
     } else {
       console.log("geo not available");
     }
-  }, []);
+  }, [success]);
 
   return <div></div>;
 }
