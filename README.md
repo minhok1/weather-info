@@ -1,4 +1,4 @@
-#Weather Info App
+Weather Info App
 
 To run this app, make sure the Graphql weather API is running at localhost:4000.
 
