@@ -7,7 +7,7 @@ import store from "./store";
 
 function App() {
   const [city, setCity] = useState("");
-  const [temp, setTemp] = useState(false);
+  const [temp, setTemp] = useState("");
 
   const makeFetchCall = () => {
     fetch("http://localhost:4000/", {
@@ -34,16 +34,8 @@ function App() {
     }
   }, [city]);
 
-  // store.subscribe(() => {
-  //   setTemp(!temp);
-  // });
-
-  useEffect(() => {
-    const unsubscribe = store.subscribe(() => {
-      console.log("subscribe triggered");
-      setTemp(!temp);
-    });
-    return unsubscribe;
+  store.subscribe(() => {
+    setTemp(store.getState());
   });
 
   return (
